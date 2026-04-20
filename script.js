@@ -166,7 +166,7 @@ function preloadNext(seg) {
 // ══ loadSeg ══
 function loadSeg(seg, play=false){
   curSeg = seg;
-  _endingTriggered = false;   // reset عند كل segment جديدة
+  _endingDone = false;
   const url = VIDEOS[seg];
 
   // لو الفيديو ده اتحمل مسبقاً — استخدم الـ buffered data
@@ -472,8 +472,7 @@ vid.addEventListener('timeupdate', () => {
     }
   }
 });
-// ── flag يمنع تنفيذ الـ ending أكتر من مرة
-let _endingTriggered = false;
+let _endingDone = false;
 
 vid.addEventListener('ended', () => {
   pBtn.textContent = '▶';
@@ -486,12 +485,9 @@ vid.addEventListener('ended', () => {
   if(f.type === 'auto') {
     loadSeg(f.next, true);
   } else if(f.type === 'end') {
-    // امنع التنفيذ المتكرر لو المستخدم عمل seek وخلّى الفيديو يخلص تاني
-    if(_endingTriggered) return;
-    _endingTriggered = true;
-    // ١) اعرض زرار "جرّب المسار الآخر"
+    if(_endingDone) return;
+    _endingDone = true;
     showRestartBtn();
-    // ٢) بعد ثانية اعرض قسم التصويت الخاص بالحلقة دي
     setTimeout(() => {
       if(window.showPoll) window.showPoll(currentEp);
       if(window.ewfOnEpisodeComplete) window.ewfOnEpisodeComplete(currentEp);
@@ -502,11 +498,18 @@ vid.addEventListener('ended', () => {
 });
 
 // ── PLAYER CONTROLS ──
-function handleWrapClick(){ if(!olay.classList.contains('visible')) togglePlay(); }
-function togglePlay(){ vid.paused ? vid.play() : vid.pause(); }
+function handleWrapClick(){
+  if(!olay.classList.contains('visible')) togglePlay();
+}
+function togglePlay(){
+  if(curSeg === 'ending' && vid.ended) return;
+  vid.paused ? vid.play() : vid.pause();
+}
 function seekVid(e){
   const b = document.getElementById('pBar'), r = b.getBoundingClientRect();
-  if(vid.duration) vid.currentTime = ((e.clientX - r.left) / r.width) * vid.duration;
+  if(!vid.duration) return;
+  vid.currentTime = ((e.clientX - r.left) / r.width) * vid.duration;
+  if(curSeg === 'ending') { vid.pause(); }
 }
 function toggleMute(){
   vid.muted = !vid.muted;
