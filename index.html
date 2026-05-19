@@ -423,10 +423,10 @@ if (location.pathname.endsWith("index.html")) {
         <div class="ep-footer"><span class="ep-dur">⏱ 6–8 دقائق</span><div class="ep-tags"><span class="tag t-e">علم</span><span class="tag t-f">فنكوش</span></div></div>
       </div>
 
-      <div class="ep-card locked" data-reveal style="transition-delay:.3s">
-        <div class="ep-thumb"><div class="ep-thumb-bg" style="background:linear-gradient(135deg,#051510,#050a1a)"></div><div class="ep-thumb-icon">✋</div><div class="ep-num">04</div><div class="lock-ic">🔒</div></div>
+      <div class="ep-card" data-reveal style="transition-delay:.3s" onclick="loadEpisode(4)" onmouseenter="preloadEpOnHover(4)" ontouchstart="preloadEpOnHover(4)">
+        <div class="ep-thumb"><div class="ep-thumb-bg" style="background:linear-gradient(135deg,#051510,#050a1a)"></div><div class="ep-thumb-icon">✋</div><div class="ep-num">04</div></div>
         <div class="ep-body"><h3>الفنجان والكف: مستقبلك في إيدك؟</h3><p>شايف إيه في الفنجان؟ هل الخطوط دي بتحكي مستقبلك ولا هي مجرد قراءة باردة لعقلك؟</p></div>
-        <div class="ep-footer"><span class="ep-dur">⏱ قريباً</span><div class="ep-tags"><span class="tag t-e">علم</span><span class="tag t-f">فنكوش</span></div></div>
+        <div class="ep-footer"><span class="ep-dur">⏱ 6–8 دقائق</span><div class="ep-tags"><span class="tag t-e">علم</span><span class="tag t-f">فنكوش</span></div></div>
       </div>
 
       <div class="ep-card locked" data-reveal style="transition-delay:.1s">
@@ -571,6 +571,10 @@ if (location.pathname.endsWith("index.html")) {
       const ep2snap = await get(ref(db, 'votes/ep2'));
       if(!ep2snap.exists()) {
         await set(ref(db, 'votes/ep2'), { elm: 1, fankoush: 1 });
+      }
+      const ep4snap = await get(ref(db, 'votes/ep4'));
+      if(!ep4snap.exists()) {
+        await set(ref(db, 'votes/ep4'), { elm: 0, fankoush: 0 });
       }
     } catch(e) {}
   })();
